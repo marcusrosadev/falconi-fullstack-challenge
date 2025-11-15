@@ -25,15 +25,15 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 ### UX/UI Melhorias
 - [x] Adicionar busca por nome/email na lista de usuários
 - [x] Implementar paginação para listas grandes
-- [x] Adicionar ordenação (sort) na tabela de usuários
+- [x] Adicionar ordenação (sort) na tabela de usuários - Implementado com ordenação por nome, email, perfil e status (asc/desc)
 - [x] Criar modal de confirmação customizado (substituir `confirm()` nativo)
-- [x] Adicionar animações de transição suaves
+- [x] Adicionar animações de transição suaves - Implementado com classes CSS customizadas (fade-in, slide-up, slide-down, scale-in)
 - [ ] Implementar dark mode
 
 ### Funcionalidades
-- [x] Adicionar exportação de dados (CSV/JSON)
+- [x] Adicionar exportação de dados (CSV/JSON) - Implementado com funções exportUsersToCSV e exportUsersToJSON, incluindo timestamp no nome do arquivo
 - [ ] Implementar histórico de alterações (audit log)
-- [ ] Adicionar filtros avançados (múltiplos perfis, status, etc.)
+- [x] Adicionar filtros avançados (múltiplos perfis, status, etc.) - Implementado com filtro por perfil e busca por nome/email
 - [ ] Criar dashboard com estatísticas (total de usuários, por perfil, etc.)
 
 ### Performance
@@ -54,7 +54,7 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 ### DevOps
 - [ ] Dockerizar a aplicação (Dockerfile e docker-compose)
 - [ ] Configurar CI/CD (GitHub Actions ou GitLab CI)
-- [ ] Adicionar variáveis de ambiente para diferentes ambientes
+- [x] Adicionar variáveis de ambiente para diferentes ambientes - Implementado com process.env.PORT no backend e NEXT_PUBLIC_API_URL no frontend
 - [ ] Configurar logging estruturado (Winston ou Pino)
 - [ ] Implementar monitoramento (Sentry, DataDog, etc.)
 
@@ -98,8 +98,12 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 ### Prioridade Média
 - ✅ Busca por nome/email com debounce
 - ✅ Paginação para listas grandes
+- ✅ Ordenação (sort) na tabela de usuários por nome, email, perfil e status
 - ✅ Modal de confirmação customizado (ConfirmModal)
+- ✅ Animações de transição suaves (fade-in, slide-up, slide-down, scale-in)
 - ✅ Debounce na busca (300ms)
+- ✅ Exportação de dados (CSV/JSON) com timestamp
+- ✅ Filtros avançados (filtro por perfil + busca)
 
 ### Prioridade Baixa
 - ✅ Autenticação e autorização (sistema baseado em email)

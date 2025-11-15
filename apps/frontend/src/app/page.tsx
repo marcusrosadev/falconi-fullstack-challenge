@@ -20,7 +20,7 @@ import {
   ApiError,
 } from '@/services/api'
 import { exportUsersToCSV, exportUsersToJSON } from '@/utils/export'
-import { UsersIcon, LogoutIcon, DownloadIcon, SpinnerIcon, LockIcon } from '@/components/icons'
+import { UsersIcon, AddUserIcon, LogoutIcon, DownloadIcon, SpinnerIcon, LockIcon } from '@/components/icons/Icons'
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([])
@@ -356,17 +356,21 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mb-4 space-y-4">
-                <ProfileFilter
-                  profiles={profiles}
-                  selectedProfileId={selectedProfileId}
-                  onFilterChange={setSelectedProfileId}
-                />
-                <SearchBar
-                  value={searchTerm}
-                  onChange={setSearchTerm}
-                  placeholder="Buscar por nome ou email..."
-                />
+              <div className="mb-4 flex flex-col sm:flex-row gap-4">
+                <div className="flex-1 sm:flex-initial sm:w-64">
+                  <ProfileFilter
+                    profiles={profiles}
+                    selectedProfileId={selectedProfileId}
+                    onFilterChange={setSelectedProfileId}
+                  />
+                </div>
+                <div className="flex-1 w-full">
+                  <SearchBar
+                    value={searchTerm}
+                    onChange={setSearchTerm}
+                    placeholder="Buscar por nome ou email..."
+                  />
+                </div>
               </div>
 
               {loading ? (
@@ -409,8 +413,18 @@ export default function Home() {
           {canCreate || canEdit ? (
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-lg p-6 sticky top-4 border border-gray-100 slide-up">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                  {editingUser ? 'Editar Usuário' : 'Novo Usuário'}
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  {editingUser ? (
+                    <>
+                      <UsersIcon className="w-6 h-6 text-blue-600" />
+                      Editar Usuário
+                    </>
+                  ) : (
+                    <>
+                      <AddUserIcon className="w-6 h-6 text-green-600" />
+                      Novo Usuário
+                    </>
+                  )}
                 </h2>
                 <UserForm
                   user={editingUser}

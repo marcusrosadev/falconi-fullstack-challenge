@@ -82,7 +82,8 @@ export class UsersService {
   }
 
   update(id: string, updateUserInput: UpdateUserInput): User {
-    if (!this.userRepository.exists(id)) {
+    const currentUser = this.userRepository.findById(id);
+    if (!currentUser) {
       throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
     }
 
@@ -91,6 +92,19 @@ export class UsersService {
         this.profilesService.findOne(updateUserInput.profileId);
       } catch (error) {
         throw new BadRequestException(`Perfil com ID ${updateUserInput.profileId} não encontrado`);
+      }
+
+      const newProfile = this.profilesService.findOne(updateUserInput.profileId);
+      if (this.isAdminUser(currentUser) && newProfile.name !== 'Administrador') {
+        const activeAdmins = this.userRepository
+          .findAll()
+          .filter((u) => u.isActive && u.id !== id && this.isAdminUser(u));
+
+        if (activeAdmins.length === 0) {
+          throw new BadRequestException(
+            'Não é possível alterar o perfil do único administrador ativo do sistema',
+          );
+        }
       }
     }
 
@@ -103,7 +117,37 @@ export class UsersService {
     return this.userRepository.update(id, updateUserInput);
   }
 
+  private isAdminUser(user: User): boolean {
+    try {
+      const profile = this.profilesService.findOne(user.profileId);
+      return profile.name === 'Administrador';
+    } catch {
+      return false;
+    }
+  }
+
   remove(id: string): void {
+    const user = this.userRepository.findById(id);
+    if (!user) {
+      throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+    }
+
+    if (!user.isActive) {
+      throw new BadRequestException('Não é possível excluir um usuário inativo');
+    }
+
+    if (this.isAdminUser(user)) {
+      const activeAdmins = this.userRepository
+        .findAll()
+        .filter((u) => u.isActive && u.id !== id && this.isAdminUser(u));
+
+      if (activeAdmins.length === 0) {
+        throw new BadRequestException(
+          'Não é possível excluir o único administrador ativo do sistema',
+        );
+      }
+    }
+
     const deleted = this.userRepository.delete(id);
     if (!deleted) {
       throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
@@ -115,6 +159,20 @@ export class UsersService {
   }
 
   deactivate(id: string): User {
+    const user = this.findOne(id);
+
+    if (this.isAdminUser(user)) {
+      const activeAdmins = this.userRepository
+        .findAll()
+        .filter((u) => u.isActive && u.id !== id && this.isAdminUser(u));
+
+      if (activeAdmins.length === 0) {
+        throw new BadRequestException(
+          'Não é possível desativar o único administrador ativo do sistema',
+        );
+      }
+    }
+
     return this.update(id, { isActive: false });
   }
 }

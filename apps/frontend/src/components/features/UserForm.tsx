@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { User, Profile, CreateUserInput, UpdateUserInput } from '@falconi/shared-types'
-import { UserIcon, EmailIcon, UsersIcon, ChevronDownIcon, SpinnerIcon, CloseIcon } from '../icons/Icons'
+import { ChevronDownIcon, SpinnerIcon, CloseIcon } from '../icons/Icons'
 
 interface UserFormProps {
   user: User | null
@@ -145,23 +145,18 @@ export default function UserForm({
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Nome <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <UserIcon className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            value={formData.firstName}
-            onChange={(e) => handleChange('firstName', e.target.value)}
-            onBlur={() => handleBlur('firstName')}
-            placeholder="Digite o nome"
-            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
-              errors.firstName && touched.firstName
-                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-            }`}
-          />
-        </div>
+        <input
+          type="text"
+          value={formData.firstName}
+          onChange={(e) => handleChange('firstName', e.target.value)}
+          onBlur={() => handleBlur('firstName')}
+          placeholder="Digite o nome"
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
+            errors.firstName && touched.firstName
+              ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+          }`}
+        />
         {errors.firstName && touched.firstName && (
           <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
             <CloseIcon className="w-4 h-4" />
@@ -174,23 +169,18 @@ export default function UserForm({
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Sobrenome <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <UserIcon className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            value={formData.lastName}
-            onChange={(e) => handleChange('lastName', e.target.value)}
-            onBlur={() => handleBlur('lastName')}
-            placeholder="Digite o sobrenome"
-            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
-              errors.lastName && touched.lastName
-                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-            }`}
-          />
-        </div>
+        <input
+          type="text"
+          value={formData.lastName}
+          onChange={(e) => handleChange('lastName', e.target.value)}
+          onBlur={() => handleBlur('lastName')}
+          placeholder="Digite o sobrenome"
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
+            errors.lastName && touched.lastName
+              ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+          }`}
+        />
         {errors.lastName && touched.lastName && (
           <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
             <CloseIcon className="w-4 h-4" />
@@ -203,23 +193,18 @@ export default function UserForm({
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Email <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <EmailIcon className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            onBlur={() => handleBlur('email')}
-            placeholder="exemplo@email.com"
-            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
-              errors.email && touched.email
-                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-            }`}
-          />
-        </div>
+        <input
+          type="email"
+          value={formData.email}
+          onChange={(e) => handleChange('email', e.target.value)}
+          onBlur={() => handleBlur('email')}
+          placeholder="exemplo@email.com"
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
+            errors.email && touched.email
+              ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+          }`}
+        />
         {errors.email && touched.email && (
           <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
             <CloseIcon className="w-4 h-4" />
@@ -233,14 +218,11 @@ export default function UserForm({
           Perfil <span className="text-red-500">*</span>
         </label>
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <UsersIcon className="h-5 w-5 text-gray-400" />
-          </div>
           <select
             value={formData.profileId}
             onChange={(e) => handleChange('profileId', e.target.value)}
             onBlur={() => handleBlur('profileId')}
-            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition text-gray-900 appearance-none bg-white ${
+            className={`w-full pl-4 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition text-gray-900 appearance-none bg-white ${
               errors.profileId && touched.profileId
                 ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
                 : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
