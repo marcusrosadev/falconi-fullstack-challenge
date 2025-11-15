@@ -6,7 +6,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build && node scripts/postbuild.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start --watch --entryFile apps/backend/src/main",
     "start:dev": "nest start --watch --entryFile apps/backend/src/main",
