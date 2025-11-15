@@ -33,7 +33,7 @@ export class UsersService {
     if (profiles.length === 0) return;
 
     const adminProfile = profiles.find((p) => p.name === 'Administrador');
-    const userProfile = profiles.find((p) => p.name === 'Usuário');
+    const editorProfile = profiles.find((p) => p.name === 'Editor');
     const guestProfile = profiles.find((p) => p.name === 'Visitante');
 
     // Criar alguns usuários apenas se os perfis existirem
@@ -46,12 +46,12 @@ export class UsersService {
       });
     }
 
-    if (userProfile) {
+    if (editorProfile) {
       this.create({
         firstName: 'Maria',
         lastName: 'Santos',
         email: 'maria.santos@example.com',
-        profileId: userProfile.id,
+        profileId: editorProfile.id,
       });
     }
 

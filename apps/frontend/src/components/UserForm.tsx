@@ -123,108 +123,232 @@ export default function UserForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           Nome <span className="text-red-500">*</span>
         </label>
-        <input
-          type="text"
-          value={formData.firstName}
-          onChange={(e) => handleChange('firstName', e.target.value)}
-          onBlur={() => handleBlur('firstName')}
-          placeholder="Digite o nome"
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 placeholder:text-gray-400 text-gray-900 ${
-            errors.firstName && touched.firstName
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
-          }`}
-        />
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg
+              className="h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={formData.firstName}
+            onChange={(e) => handleChange('firstName', e.target.value)}
+            onBlur={() => handleBlur('firstName')}
+            placeholder="Digite o nome"
+            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
+              errors.firstName && touched.firstName
+                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+            }`}
+          />
+        </div>
         {errors.firstName && touched.firstName && (
-          <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+          <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {errors.firstName}
+          </p>
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="space-y-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           Sobrenome <span className="text-red-500">*</span>
         </label>
-        <input
-          type="text"
-          value={formData.lastName}
-          onChange={(e) => handleChange('lastName', e.target.value)}
-          onBlur={() => handleBlur('lastName')}
-          placeholder="Digite o sobrenome"
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 placeholder:text-gray-400 text-gray-900 ${
-            errors.lastName && touched.lastName
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
-          }`}
-        />
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg
+              className="h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={formData.lastName}
+            onChange={(e) => handleChange('lastName', e.target.value)}
+            onBlur={() => handleBlur('lastName')}
+            placeholder="Digite o sobrenome"
+            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
+              errors.lastName && touched.lastName
+                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+            }`}
+          />
+        </div>
         {errors.lastName && touched.lastName && (
-          <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+          <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {errors.lastName}
+          </p>
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="space-y-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           Email <span className="text-red-500">*</span>
         </label>
-        <input
-          type="email"
-          value={formData.email}
-          onChange={(e) => handleChange('email', e.target.value)}
-          onBlur={() => handleBlur('email')}
-          placeholder="exemplo@email.com"
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 placeholder:text-gray-400 text-gray-900 ${
-            errors.email && touched.email
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
-          }`}
-        />
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg
+              className="h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            onBlur={() => handleBlur('email')}
+            placeholder="exemplo@email.com"
+            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition placeholder:text-gray-400 text-gray-900 ${
+              errors.email && touched.email
+                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+            }`}
+          />
+        </div>
         {errors.email && touched.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+          <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {errors.email}
+          </p>
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="space-y-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           Perfil <span className="text-red-500">*</span>
         </label>
-        <select
-          value={formData.profileId}
-          onChange={(e) => handleChange('profileId', e.target.value)}
-          onBlur={() => handleBlur('profileId')}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 text-gray-900 ${
-            errors.profileId && touched.profileId
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
-          } ${!formData.profileId ? 'text-gray-400' : ''}`}
-        >
-          <option value="" disabled className="text-gray-400">
-            Selecione um perfil
-          </option>
-          {profiles.map((profile) => (
-            <option key={profile.id} value={profile.id}>
-              {profile.name}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg
+              className="h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+          </div>
+          <select
+            value={formData.profileId}
+            onChange={(e) => handleChange('profileId', e.target.value)}
+            onBlur={() => handleBlur('profileId')}
+            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition text-gray-900 appearance-none bg-white ${
+              errors.profileId && touched.profileId
+                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+            } ${!formData.profileId ? 'text-gray-400' : ''}`}
+          >
+            <option value="" disabled className="text-gray-400">
+              Selecione um perfil
             </option>
-          ))}
-        </select>
+            {profiles.map((profile) => (
+              <option key={profile.id} value={profile.id}>
+                {profile.name}
+              </option>
+            ))}
+          </select>
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <svg
+              className="h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </div>
         {errors.profileId && touched.profileId && (
-          <p className="mt-1 text-sm text-red-600">{errors.profileId}</p>
+          <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {errors.profileId}
+          </p>
         )}
       </div>
 
-      <div className="flex space-x-2 pt-4">
+      <div className="flex space-x-3 pt-6 border-t border-gray-200">
         <button
           type="submit"
           disabled={isLoading}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-md transition flex items-center justify-center"
+          className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-blue-400 disabled:to-purple-400 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg transition shadow-md hover:shadow-lg font-semibold flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>
               <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                className="animate-spin h-5 w-5 text-white"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -246,14 +370,52 @@ export default function UserForm({
               {user ? 'Atualizando...' : 'Criando...'}
             </>
           ) : (
-            user ? 'Atualizar' : 'Criar'
+            <>
+              {user ? (
+                <>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Atualizar
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Criar
+                </>
+              )}
+            </>
           )}
         </button>
         <button
           type="button"
           onClick={onCancel}
           disabled={isLoading}
-          className="flex-1 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-800 px-4 py-2 rounded-md transition"
+          className="px-4 py-3 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed text-gray-700 rounded-lg transition font-medium border border-gray-300"
         >
           Cancelar
         </button>

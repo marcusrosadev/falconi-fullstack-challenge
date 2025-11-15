@@ -15,7 +15,7 @@ import { IUserRepository } from './repositories/user.repository.interface';
       useClass: InMemoryUserRepository,
     },
   ],
-  exports: [UsersService],
+  exports: [UsersService, 'IUserRepository'],
 })
 export class UsersModule {}
 

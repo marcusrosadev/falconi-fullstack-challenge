@@ -6,6 +6,9 @@ import {
   UserFilters,
   PaginationParams,
   PaginatedResponse,
+  LoginInput,
+  AuthResponse,
+  Permission,
 } from '@falconi/shared-types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
@@ -121,6 +124,19 @@ export async function toggleUserStatus(
   isActive: boolean,
 ): Promise<User> {
   return isActive ? deactivateUser(id) : activateUser(id)
+}
+
+// ============ AUTH API ============
+
+export async function login(loginInput: LoginInput): Promise<AuthResponse> {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(loginInput),
+  })
+  return handleResponse<AuthResponse>(response)
 }
 
 // ============ PROFILES API ============

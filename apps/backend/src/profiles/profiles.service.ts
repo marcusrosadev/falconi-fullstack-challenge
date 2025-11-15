@@ -20,7 +20,7 @@ export class ProfilesService {
 
   private initializeMockData(): void {
     // Criar perfis iniciais apenas se não existirem
-    const initialProfiles = ['Administrador', 'Usuário', 'Visitante'];
+    const initialProfiles = ['Administrador', 'Editor', 'Visitante'];
     initialProfiles.forEach((name) => {
       if (!this.profileRepository.findByName(name)) {
         this.create({ name });

@@ -70,17 +70,64 @@ O frontend estará disponível em: `http://localhost:3000`
 
 > **Nota**: Você pode ver um aviso `ENOWORKSPACES` do npm ao rodar comandos dentro de workspaces. Isso é apenas informativo e não afeta o funcionamento do Next.js. O servidor continuará rodando normalmente.
 
+## 🔐 Autenticação e Usuários Mockados
+
+O sistema possui autenticação simples baseada em email. Os seguintes usuários estão disponíveis para login:
+
+### Usuários Disponíveis
+
+| Nome | Email | Perfil | Permissões |
+|------|-------|--------|------------|
+| João Silva | `joao.silva@example.com` | Administrador | ✅ Ver usuários<br>✅ Criar usuários<br>✅ Editar usuários (todos)<br>✅ Excluir usuários<br>✅ Ativar/Desativar usuários (todos)<br>✅ Ver perfis<br>✅ Gerenciar perfis |
+| Maria Santos | `maria.santos@example.com` | Editor | ✅ Ver usuários<br>✅ Criar usuários<br>✅ Editar usuários (exceto Administradores)<br>❌ Excluir usuários<br>✅ Ativar/Desativar usuários (apenas Visitantes) |
+| Pedro Oliveira | `pedro.oliveira@example.com` | Visitante | ✅ Ver usuários<br>❌ Criar usuários<br>❌ Editar usuários<br>❌ Excluir usuários<br>❌ Ativar/Desativar usuários |
+
+### Como Fazer Login
+
+1. Acesse a aplicação em `http://localhost:3000`
+2. Você será redirecionado para a tela de login
+3. Digite o email de um dos usuários acima (ex: `joao.silva@example.com`)
+4. Clique em "Entrar"
+
+> **Nota:** A autenticação atual é simplificada e não requer senha. Apenas o email é necessário para login. Em produção, isso deve ser substituído por um sistema de autenticação robusto com senhas criptografadas.
+
+### Permissões por Perfil
+
+- **Administrador**: 
+  - Acesso total ao sistema
+  - Pode criar, editar, excluir e ativar/desativar qualquer usuário
+  - Pode gerenciar perfis
+  
+- **Editor**: 
+  - Pode criar novos usuários
+  - Pode editar usuários, **exceto Administradores**
+  - **NÃO pode excluir usuários**
+  - Pode ativar/desativar usuários, **mas apenas Visitantes** (não pode ativar/desativar outros Editores ou Administradores)
+  
+- **Visitante**: 
+  - Apenas visualização de usuários
+  - Sem permissão para criar, editar, excluir ou ativar/desativar usuários
+
 ## 📋 Funcionalidades Implementadas
 
+### Autenticação
+- ✅ Tela de login com gradiente moderno
+- ✅ Sistema de autenticação baseado em email
+- ✅ Proteção de rotas baseada em permissões
+- ✅ Contexto de autenticação com persistência (localStorage)
+- ✅ Logout funcional
+
 ### Usuários
-- ✅ Criar usuário
-- ✅ Editar usuário
-- ✅ Remover usuário
+- ✅ Criar usuário (requer permissão)
+- ✅ Editar usuário (requer permissão)
+- ✅ Remover usuário (requer permissão)
 - ✅ Listar todos os usuários
 - ✅ Buscar usuário por ID
-- ✅ Ativar usuário
-- ✅ Desativar usuário
+- ✅ Ativar usuário (requer permissão)
+- ✅ Desativar usuário (requer permissão)
 - ✅ Filtrar usuários por perfil
+- ✅ Buscar por nome/email
+- ✅ Paginação
 
 ### Perfis
 - ✅ Criar perfil
@@ -186,10 +233,9 @@ Veja o arquivo [TODO.md](./TODO.md) para uma lista completa e detalhada de melho
 > **Nota:** Para usar o Swagger, instale a dependência: `npm install` (na raiz) ou `cd apps/backend && npm install @nestjs/swagger`
 
 ### Médio Prazo
-- [ ] Integração com banco de dados (MySQL conforme requisitos da vaga)
-- [ ] Autenticação e autorização
-- [ ] Logging estruturado
-- [ ] Tratamento de erros mais robusto
+- [x] Autenticação e autorização
+- [x] Logging estruturado
+- [x] Tratamento de erros mais robusto
 
 ### Longo Prazo
 - [ ] Implementar testes E2E

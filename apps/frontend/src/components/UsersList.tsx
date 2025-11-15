@@ -3,25 +3,38 @@
 import { User, Profile } from '@falconi/shared-types'
 import IconButton from './IconButton'
 import { EditIcon, DeleteIcon, ActivateIcon, DeactivateIcon } from './Icons'
+import { canEditUser, canToggleUserStatus } from '@/utils/permissions'
 
 interface UsersListProps {
   users: User[]
   profiles: Profile[]
-  onEdit: (user: User) => void
-  onDelete: (id: string, userName: string) => void
-  onToggleActive: (id: string, isActive: boolean) => void
+  loggedUserProfile: Profile | null
+  onEdit?: (user: User) => void
+  onDelete?: (id: string, userName: string) => void
+  onToggleActive?: (id: string, isActive: boolean) => void
+  canEditPermission?: boolean
+  canDeletePermission?: boolean
+  canActivatePermission?: boolean
 }
 
 export default function UsersList({
   users,
   profiles,
+  loggedUserProfile,
   onEdit,
   onDelete,
   onToggleActive,
+  canEditPermission = false,
+  canDeletePermission = false,
+  canActivatePermission = false,
 }: UsersListProps) {
   const getProfileName = (profileId: string) => {
     const profile = profiles.find((p) => p.id === profileId)
     return profile?.name || 'N/A'
+  }
+
+  const getProfile = (profileId: string): Profile | null => {
+    return profiles.find((p) => p.id === profileId) || null
   }
 
   if (users.length === 0) {
@@ -88,26 +101,58 @@ export default function UsersList({
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center space-x-1 flex-wrap gap-1">
-                      <IconButton
-                        icon={<EditIcon />}
-                        onClick={() => onEdit(user)}
-                        tooltip="Editar usuário"
-                        variant="edit"
-                      />
-                      <IconButton
-                        icon={
-                          user.isActive ? <DeactivateIcon /> : <ActivateIcon />
+                      {(() => {
+                        const userProfile = getProfile(user.profileId)
+                        const canEdit = canEditUser(
+                          loggedUserProfile,
+                          user,
+                          userProfile,
+                          canEditPermission && !!onEdit,
+                        )
+                        const canToggle = canToggleUserStatus(
+                          loggedUserProfile,
+                          userProfile,
+                          canActivatePermission && !!onToggleActive,
+                        )
+                        const canDelete = canDeletePermission && !!onDelete
+
+                        if (!canEdit && !canDelete && !canToggle) {
+                          return (
+                            <span className="text-xs text-gray-400">Apenas visualização</span>
+                          )
                         }
-                        onClick={() => onToggleActive(user.id, user.isActive)}
-                        tooltip={user.isActive ? 'Desativar usuário' : 'Ativar usuário'}
-                        variant={user.isActive ? 'deactivate' : 'activate'}
-                      />
-                      <IconButton
-                        icon={<DeleteIcon />}
-                        onClick={() => onDelete(user.id, fullName)}
-                        tooltip="Excluir usuário"
-                        variant="delete"
-                      />
+
+                        return (
+                          <>
+                            {canEdit && onEdit && (
+                              <IconButton
+                                icon={<EditIcon />}
+                                onClick={() => onEdit(user)}
+                                tooltip="Editar usuário"
+                                variant="edit"
+                              />
+                            )}
+                            {canToggle && onToggleActive && (
+                              <IconButton
+                                icon={
+                                  user.isActive ? <DeactivateIcon /> : <ActivateIcon />
+                                }
+                                onClick={() => onToggleActive(user.id, user.isActive)}
+                                tooltip={user.isActive ? 'Desativar usuário' : 'Ativar usuário'}
+                                variant={user.isActive ? 'deactivate' : 'activate'}
+                              />
+                            )}
+                            {canDelete && onDelete && (
+                              <IconButton
+                                icon={<DeleteIcon />}
+                                onClick={() => onDelete(user.id, fullName)}
+                                tooltip="Excluir usuário"
+                                variant="delete"
+                              />
+                            )}
+                          </>
+                        )
+                      })()}
                     </div>
                   </td>
                 </tr>
