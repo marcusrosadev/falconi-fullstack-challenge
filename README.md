@@ -22,7 +22,7 @@ Aplicação fullstack para gerenciamento de usuários e perfis, desenvolvida com
 ## 📁 Estrutura do Projeto
 
 ```
-falconi/
+falconi-fullstack-challenge/
 ├── apps/
 │   ├── backend/          # API RESTful com NestJS
 │   └── frontend/         # Interface com Next.js

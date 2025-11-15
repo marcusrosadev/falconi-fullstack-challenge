@@ -122,7 +122,7 @@ cd ../..
 ## Estrutura de Pastas
 
 ```
-falconi/
+falconi-fullstack-challenge/
 ├── apps/
 │   ├── backend/              # API NestJS
 │   │   ├── src/
