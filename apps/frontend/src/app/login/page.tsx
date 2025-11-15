@@ -25,7 +25,6 @@ export default function LoginPage() {
       await login(email)
       router.push('/')
     } catch (error) {
-      // Erro já tratado no AuthContext
     } finally {
       setIsLoading(false)
     }

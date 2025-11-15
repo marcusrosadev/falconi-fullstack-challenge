@@ -1,4 +1,3 @@
-// Normalizar API_URL removendo barra final se existir
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/$/, '')
 
 export class ApiError extends Error {

@@ -3,11 +3,6 @@ import { IUserRepository } from '../users/repositories/user.repository.interface
 import { IProfileRepository } from '../profiles/repositories/profile.repository.interface';
 import { CreateUserInput } from '@falconi/shared-types';
 
-/**
- * Service responsável por inicializar dados mockados
- * Segue o princípio SOLID - Single Responsibility
- * Separa a responsabilidade de seed dos services de negócio
- */
 @Injectable()
 export class SeedService implements OnModuleInit {
   constructor(
@@ -18,7 +13,6 @@ export class SeedService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // Usar setTimeout para garantir que os módulos estejam totalmente inicializados
     setTimeout(() => {
       this.seedProfiles();
       this.seedUsers();

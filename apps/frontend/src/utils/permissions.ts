@@ -13,7 +13,6 @@ export function canEditUser(
   if (!hasEditPermission) return false
   if (!loggedUserProfile || !targetUserProfile) return false
 
-  // Se o perfil logado é Editor, não pode editar Administradores
   if (loggedUserProfile.name === 'Editor' && targetUserProfile.name === 'Administrador') {
     return false
   }
@@ -33,7 +32,6 @@ export function canToggleUserStatus(
   if (!hasActivatePermission) return false
   if (!loggedUserProfile || !targetUserProfile) return false
 
-  // Se o perfil logado é Editor, só pode ativar/desativar Visitantes
   if (loggedUserProfile.name === 'Editor') {
     return targetUserProfile.name === 'Visitante'
   }

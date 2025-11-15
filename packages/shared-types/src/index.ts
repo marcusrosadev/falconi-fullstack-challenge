@@ -50,7 +50,7 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-// DTOs para Profile (mantidos para compatibilidade)
+// DTOs para Profile
 export interface CreateProfileDto {
   name: string;
 }

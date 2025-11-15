@@ -16,7 +16,6 @@ async function getApp() {
   const expressApp = express();
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
 
-  // Habilitar CORS para qualquer origem (challenge - permite acesso de qualquer lugar)
   app.enableCors({
     origin: '*',
     credentials: true,

@@ -106,7 +106,6 @@ export default function Home() {
 
       const response = await usersApi.getUsers(filters, paginationParams)
 
-      // Verificar se é resposta paginada ou array simples
       if (Array.isArray(response)) {
         setUsers(response)
         setPagination(null)
@@ -135,7 +134,7 @@ export default function Home() {
       setSubmitting(true)
       await usersApi.createUser(userData)
       await loadUsers()
-      setEditingUser(null) // Isso vai limpar o formulário via useEffect no UserForm
+      setEditingUser(null)
       showToast('success', 'Usuário criado com sucesso!')
     } catch (err: unknown) {
       const errorMessage =
@@ -206,10 +205,8 @@ export default function Home() {
 
   const handleSort = (field: 'name' | 'email' | 'profile' | 'status' | null) => {
     if (sortField === field) {
-      // Se já está ordenando por este campo, inverte a direção
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
-      // Novo campo, começa com ascendente
       setSortField(field)
       setSortDirection('asc')
     }
