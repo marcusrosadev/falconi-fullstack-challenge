@@ -243,7 +243,6 @@ Veja o arquivo [TODO.md](./TODO.md) para uma lista completa e detalhada de melho
 - [ ] Dockerização da aplicação
 - [ ] Monitoramento e observabilidade
 - [ ] Cache para melhorar performance
-- [ ] Suporte a desenvolvimento mobile (Capacitor, conforme vaga)
 
 ## 📄 Licença
 
