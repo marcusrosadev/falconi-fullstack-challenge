@@ -90,10 +90,7 @@ export default function Toast({ toast, onClose }: ToastProps) {
 
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg min-w-[300px] max-w-md ${getToastStyles()}`}
-      style={{
-        animation: 'slideIn 0.3s ease-out',
-      }}
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg min-w-[300px] max-w-md slide-up ${getToastStyles()}`}
     >
       <div className="flex-shrink-0">{getIcon()}</div>
       <p className="flex-1 text-sm font-medium">{toast.message}</p>

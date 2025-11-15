@@ -19,20 +19,19 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 ### Documentação
 - [x] Adicionar Swagger/OpenAPI para documentação da API
 - [ ] Criar documentação de arquitetura (diagramas)
-- [ ] Adicionar JSDoc/TSDoc nos métodos principais
 
 ## 🚀 Prioridade Média
 
 ### UX/UI Melhorias
 - [x] Adicionar busca por nome/email na lista de usuários
 - [x] Implementar paginação para listas grandes
-- [ ] Adicionar ordenação (sort) na tabela de usuários
+- [x] Adicionar ordenação (sort) na tabela de usuários
 - [x] Criar modal de confirmação customizado (substituir `confirm()` nativo)
-- [ ] Adicionar animações de transição suaves
+- [x] Adicionar animações de transição suaves
 - [ ] Implementar dark mode
 
 ### Funcionalidades
-- [ ] Adicionar exportação de dados (CSV/JSON)
+- [x] Adicionar exportação de dados (CSV/JSON)
 - [ ] Implementar histórico de alterações (audit log)
 - [ ] Adicionar filtros avançados (múltiplos perfis, status, etc.)
 - [ ] Criar dashboard com estatísticas (total de usuários, por perfil, etc.)

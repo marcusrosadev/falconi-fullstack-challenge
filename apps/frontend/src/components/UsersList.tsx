@@ -2,8 +2,11 @@
 
 import { User, Profile } from '@falconi/shared-types'
 import IconButton from './IconButton'
-import { EditIcon, DeleteIcon, ActivateIcon, DeactivateIcon } from './Icons'
+import { EditIcon, DeleteIcon, ActivateIcon, DeactivateIcon, SortAscIcon, SortDescIcon } from './Icons'
 import { canEditUser, canToggleUserStatus } from '@/utils/permissions'
+
+type SortField = 'name' | 'email' | 'profile' | 'status' | null
+type SortDirection = 'asc' | 'desc'
 
 interface UsersListProps {
   users: User[]
@@ -15,6 +18,9 @@ interface UsersListProps {
   canEditPermission?: boolean
   canDeletePermission?: boolean
   canActivatePermission?: boolean
+  sortField?: SortField
+  sortDirection?: SortDirection
+  onSort?: (field: SortField) => void
 }
 
 export default function UsersList({
@@ -27,6 +33,9 @@ export default function UsersList({
   canEditPermission = false,
   canDeletePermission = false,
   canActivatePermission = false,
+  sortField = null,
+  sortDirection = 'asc',
+  onSort,
 }: UsersListProps) {
   const getProfileName = (profileId: string) => {
     const profile = profiles.find((p) => p.id === profileId)
@@ -35,6 +44,36 @@ export default function UsersList({
 
   const getProfile = (profileId: string): Profile | null => {
     return profiles.find((p) => p.id === profileId) || null
+  }
+
+  const handleSort = (field: SortField) => {
+    if (onSort) {
+      onSort(field)
+    }
+  }
+
+  const SortButton = ({ field, label }: { field: SortField; label: string }) => {
+    const isActive = sortField === field
+    const isAsc = isActive && sortDirection === 'asc'
+    const isDesc = isActive && sortDirection === 'desc'
+
+    return (
+      <button
+        onClick={() => handleSort(field)}
+        className="flex items-center gap-2 hover:text-blue-600 transition-colors group cursor-pointer"
+        title={isAsc ? 'Ordenar Z-A' : isDesc ? 'Remover ordenação' : 'Ordenar A-Z'}
+      >
+        <span className="font-medium">{label}</span>
+        <div className="flex flex-col items-center justify-center h-4">
+          <span className={`${isAsc ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'}`}>
+            <SortAscIcon className="w-3.5 h-3.5" />
+          </span>
+          <span className={`${isDesc ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'} -mt-1.5`}>
+            <SortDescIcon className="w-3.5 h-3.5" />
+          </span>
+        </div>
+      </button>
+    )
   }
 
   if (users.length === 0) {
@@ -52,16 +91,16 @@ export default function UsersList({
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider min-w-[150px]">
-                Nome
+                <SortButton field="name" label="Nome" />
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider min-w-[200px]">
-                Email
+                <SortButton field="email" label="Email" />
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider min-w-[120px]">
-                Perfil
+                <SortButton field="profile" label="Perfil" />
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider min-w-[100px]">
-                Status
+                <SortButton field="status" label="Status" />
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider min-w-[120px]">
                 Ações
@@ -69,10 +108,14 @@ export default function UsersList({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((user) => {
+            {users.map((user, index) => {
               const fullName = `${user.firstName} ${user.lastName}`
               return (
-                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                <tr 
+                  key={user.id} 
+                  className="hover:bg-gray-50 transition-all duration-200 fade-in"
+                  style={{ animationDelay: `${index * 0.03}s` }}
+                >
                   <td className="px-4 py-4">
                     <div className="text-sm font-medium text-gray-900 break-words">
                       {fullName}

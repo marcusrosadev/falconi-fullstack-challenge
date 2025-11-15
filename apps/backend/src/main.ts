@@ -5,7 +5,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Habilitar CORS para qualquer origem (challenge - permite acesso de qualquer lugar)
   app.enableCors({
     origin: '*',
     credentials: true,
@@ -13,7 +12,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  // Configurar Swagger/OpenAPI
+  // Configuração do Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('Falconi - API de Gerenciamento de Usuários')
     .setDescription('API RESTful para gerenciamento de usuários e perfis')

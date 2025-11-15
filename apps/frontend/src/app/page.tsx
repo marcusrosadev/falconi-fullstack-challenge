@@ -28,6 +28,7 @@ import {
   toggleUserStatus,
   ApiError,
 } from '@/services/api'
+import { exportUsersToCSV, exportUsersToJSON } from '@/utils/export'
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([])
@@ -52,6 +53,8 @@ export default function Home() {
     userId: null,
     userName: '',
   })
+  const [sortField, setSortField] = useState<'name' | 'email' | 'profile' | 'status' | null>(null)
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const { user, profile, logout, hasPermission, isAuthenticated, isLoading } = useAuth()
   const { showToast } = useToast()
   const router = useRouter()
@@ -61,6 +64,8 @@ export default function Home() {
   const canEdit = hasPermission(Permission.EDIT_USERS)
   const canDelete = hasPermission(Permission.DELETE_USERS)
   const canActivate = hasPermission(Permission.ACTIVATE_USERS)
+  // Editor e Admin podem exportar (ambos têm CREATE_USERS)
+  const canExport = hasPermission(Permission.CREATE_USERS)
 
   useEffect(() => {
     loadProfiles()
@@ -207,6 +212,75 @@ export default function Home() {
     }
   }
 
+  const handleSort = (field: 'name' | 'email' | 'profile' | 'status' | null) => {
+    if (sortField === field) {
+      // Se já está ordenando por este campo, inverte a direção
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      // Novo campo, começa com ascendente
+      setSortField(field)
+      setSortDirection('asc')
+    }
+  }
+
+  const getSortedUsers = (): User[] => {
+    if (!sortField) return users
+
+    const sorted = [...users].sort((a, b) => {
+      let aValue: string | number
+      let bValue: string | number
+
+      switch (sortField) {
+        case 'name':
+          aValue = `${a.firstName} ${a.lastName}`.toLowerCase()
+          bValue = `${b.firstName} ${b.lastName}`.toLowerCase()
+          break
+        case 'email':
+          aValue = a.email.toLowerCase()
+          bValue = b.email.toLowerCase()
+          break
+        case 'profile':
+          const profileA = profiles.find((p) => p.id === a.profileId)
+          const profileB = profiles.find((p) => p.id === b.profileId)
+          aValue = (profileA?.name || '').toLowerCase()
+          bValue = (profileB?.name || '').toLowerCase()
+          break
+        case 'status':
+          aValue = a.isActive ? 1 : 0
+          bValue = b.isActive ? 1 : 0
+          break
+        default:
+          return 0
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+
+    return sorted
+  }
+
+  const handleExportCSV = () => {
+    try {
+      const sortedUsers = getSortedUsers()
+      exportUsersToCSV(sortedUsers, profiles)
+      showToast('success', 'Dados exportados para CSV com sucesso!')
+    } catch (err) {
+      showToast('error', 'Erro ao exportar dados para CSV')
+    }
+  }
+
+  const handleExportJSON = () => {
+    try {
+      const sortedUsers = getSortedUsers()
+      exportUsersToJSON(sortedUsers, profiles)
+      showToast('success', 'Dados exportados para JSON com sucesso!')
+    } catch (err) {
+      showToast('error', 'Erro ao exportar dados para JSON')
+    }
+  }
+
   // Redirecionar para login se não autenticado
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -252,7 +326,7 @@ export default function Home() {
     <ProtectedRoute requiredPermission={Permission.VIEW_USERS}>
       <main className="min-h-screen bg-gray-50">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-white shadow-sm border-b border-gray-200 slide-down">
           <div className="container mx-auto px-4 max-w-7xl py-4">
             <div className="flex justify-between items-center">
               <div>
@@ -295,33 +369,81 @@ export default function Home() {
 
         <div className="container mx-auto px-4 max-w-7xl py-8">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100 overflow-hidden scale-in">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold text-gray-800">Usuários</h2>
-                {canCreate && (
-                  <button
-                    onClick={() => setEditingUser(null)}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-2 shadow-md hover:shadow-lg font-medium"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                <div className="flex items-center gap-2">
+                  {canExport && (
+                    <div className="flex items-center gap-2 mr-2">
+                      <button
+                        onClick={handleExportCSV}
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm transform hover:scale-105"
+                        title="Exportar para CSV"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                          />
+                        </svg>
+                        CSV
+                      </button>
+                      <button
+                        onClick={handleExportJSON}
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm transform hover:scale-105"
+                        title="Exportar para JSON"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                          />
+                        </svg>
+                        JSON
+                      </button>
+                    </div>
+                  )}
+                  {canCreate && (
+                    <button
+                      onClick={() => setEditingUser(null)}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium transform hover:scale-105"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                    Novo Usuário
-                  </button>
-                )}
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                      Novo Usuário
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="mb-4 space-y-4">
@@ -366,7 +488,7 @@ export default function Home() {
               ) : (
                 <>
                 <UsersList
-                  users={users}
+                  users={getSortedUsers()}
                   profiles={profiles}
                   loggedUserProfile={profile}
                   onEdit={canEdit ? setEditingUser : undefined}
@@ -375,6 +497,9 @@ export default function Home() {
                   canEditPermission={canEdit}
                   canDeletePermission={canDelete}
                   canActivatePermission={canActivate}
+                  sortField={sortField}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
                 />
                   {pagination && (
                     <Pagination
@@ -392,7 +517,7 @@ export default function Home() {
 
           {canCreate || canEdit ? (
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-lg p-6 sticky top-4 border border-gray-100">
+              <div className="bg-white rounded-lg shadow-lg p-6 sticky top-4 border border-gray-100 slide-up">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                   {editingUser ? 'Editar Usuário' : 'Novo Usuário'}
                 </h2>

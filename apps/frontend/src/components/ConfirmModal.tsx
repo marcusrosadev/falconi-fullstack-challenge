@@ -126,7 +126,7 @@ export default function ConfirmModal({
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className="relative bg-white rounded-lg shadow-xl max-w-md w-full transform transition-all"
+          className="relative bg-white rounded-lg shadow-xl max-w-md w-full transform transition-all scale-in"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-6">
