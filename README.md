@@ -203,7 +203,7 @@ Acesse a documentação interativa da API em: `http://localhost:3001/api`
 ## 📝 Dados Mockados
 
 A aplicação inicializa automaticamente com:
-- 3 perfis: Administrador, Usuário, Visitante
+- 3 perfis: Administrador, Editor, Visitante
 - 3 usuários de exemplo vinculados aos perfis
 
 ## ✨ Melhorias Implementadas Recentemente

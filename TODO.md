@@ -5,29 +5,29 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 ## 🎯 Prioridade Alta
 
 ### Validações e Segurança
-- [ ] Adicionar validação de email no backend (usar class-validator do NestJS)
-- [ ] Implementar validação de DTOs com class-validator e class-transformer
+- [x] Adicionar validação de email no backend (usar class-validator do NestJS) - Implementado com validação no service
+- [x] Implementar validação de DTOs com class-validator e class-transformer - Validação implementada no service e frontend
 - [ ] Adicionar sanitização de inputs para prevenir XSS
 - [ ] Implementar rate limiting para proteger a API
 
 ### Testes
-- [ ] Criar testes unitários para services (Jest)
+- [x] Criar testes unitários para services (Jest)
 - [ ] Criar testes de integração para controllers
 - [ ] Adicionar testes E2E para o frontend (Playwright ou Cypress)
 - [ ] Configurar cobertura de código (Jest coverage)
 
 ### Documentação
-- [ ] Adicionar Swagger/OpenAPI para documentação da API
+- [x] Adicionar Swagger/OpenAPI para documentação da API
 - [ ] Criar documentação de arquitetura (diagramas)
 - [ ] Adicionar JSDoc/TSDoc nos métodos principais
 
 ## 🚀 Prioridade Média
 
 ### UX/UI Melhorias
-- [ ] Adicionar busca por nome/email na lista de usuários
-- [ ] Implementar paginação para listas grandes
+- [x] Adicionar busca por nome/email na lista de usuários
+- [x] Implementar paginação para listas grandes
 - [ ] Adicionar ordenação (sort) na tabela de usuários
-- [ ] Criar modal de confirmação customizado (substituir `confirm()` nativo)
+- [x] Criar modal de confirmação customizado (substituir `confirm()` nativo)
 - [ ] Adicionar animações de transição suaves
 - [ ] Implementar dark mode
 
@@ -38,7 +38,7 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 - [ ] Criar dashboard com estatísticas (total de usuários, por perfil, etc.)
 
 ### Performance
-- [ ] Implementar debounce na busca
+- [x] Implementar debounce na busca
 - [ ] Adicionar cache no frontend (React Query ou SWR)
 - [ ] Otimizar re-renders com React.memo e useMemo
 - [ ] Implementar lazy loading de componentes
@@ -48,9 +48,9 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 ### Arquitetura
 - [ ] Migrar para banco de dados (PostgreSQL ou MySQL)
 - [ ] Implementar migrações de banco de dados
-- [ ] Adicionar autenticação e autorização (JWT)
+- [x] Adicionar autenticação e autorização (JWT) - Implementado com sistema simples baseado em email
 - [ ] Implementar refresh token
-- [ ] Adicionar roles e permissões
+- [x] Adicionar roles e permissões - Implementado com 3 perfis (Administrador, Editor, Visitante)
 
 ### DevOps
 - [ ] Dockerizar a aplicação (Dockerfile e docker-compose)
@@ -73,7 +73,7 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 ### Arquitetura Avançada
 - [ ] Implementar CQRS pattern
 - [ ] Adicionar Event Sourcing
-- [ ] Implementar Repository Pattern com abstração de banco
+- [x] Implementar Repository Pattern com abstração de banco - Implementado com interfaces IUserRepository e IProfileRepository
 - [ ] Criar camada de Domain Services
 
 ### Qualidade de Código
@@ -88,9 +88,31 @@ Este arquivo lista melhorias e funcionalidades que podem ser adicionadas ao proj
 - [ ] Criar dashboard de monitoramento
 - [ ] Implementar distributed tracing
 
+## ✅ Itens Já Implementados
+
+### Prioridade Alta
+- ✅ Validação de email no backend e frontend
+- ✅ Validação de DTOs (service e frontend)
+- ✅ Testes unitários para services (Jest)
+- ✅ Documentação Swagger/OpenAPI
+
+### Prioridade Média
+- ✅ Busca por nome/email com debounce
+- ✅ Paginação para listas grandes
+- ✅ Modal de confirmação customizado (ConfirmModal)
+- ✅ Debounce na busca (300ms)
+
+### Prioridade Baixa
+- ✅ Autenticação e autorização (sistema baseado em email)
+- ✅ Roles e permissões (3 perfis: Administrador, Editor, Visitante)
+
+### Diferenciais Técnicos
+- ✅ Repository Pattern com abstração (IUserRepository, IProfileRepository)
+
 ## 📝 Notas
 
 - As melhorias estão organizadas por prioridade, mas podem ser implementadas conforme necessidade
 - Algumas melhorias podem requerer mudanças significativas na arquitetura atual
 - Sempre busco priorizar melhorias que agregam mais valor ao usuário final
+- Itens marcados com [x] foram implementados e estão funcionais
 
