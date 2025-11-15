@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "cd ../.. && npm install && npm run build --workspace=packages/shared-types && cd apps/backend && npm install && npm run build",
+  "installCommand": "cd ../.. && npm install",
   "builds": [
     {
       "src": "api/index.ts",
