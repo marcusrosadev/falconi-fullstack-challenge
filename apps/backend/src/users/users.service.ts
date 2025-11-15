@@ -1,5 +1,12 @@
 import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
-import { User, CreateUserInput, UpdateUserInput } from '@falconi/shared-types';
+import {
+  User,
+  CreateUserInput,
+  UpdateUserInput,
+  UserFilters,
+  PaginationParams,
+  PaginatedResponse,
+} from '@falconi/shared-types';
 import { IUserRepository } from './repositories/user.repository.interface';
 import { ProfilesService } from '../profiles/profiles.service';
 
@@ -58,11 +65,48 @@ export class UsersService {
     }
   }
 
-  findAll(profileId?: string): User[] {
-    if (profileId) {
-      return this.userRepository.findByProfileId(profileId);
+  findAll(filters?: UserFilters, pagination?: PaginationParams): User[] | PaginatedResponse<User> {
+    let users: User[];
+
+    // Aplicar filtros
+    if (filters?.profileId && filters?.search) {
+      // Ambos os filtros: buscar por perfil e depois filtrar por busca
+      const profileUsers = this.userRepository.findByProfileId(filters.profileId);
+      users = profileUsers.filter((u) => {
+        const term = filters.search!.toLowerCase();
+        return (
+          u.firstName.toLowerCase().includes(term) ||
+          u.lastName.toLowerCase().includes(term) ||
+          u.email.toLowerCase().includes(term) ||
+          `${u.firstName} ${u.lastName}`.toLowerCase().includes(term)
+        );
+      });
+    } else if (filters?.profileId) {
+      users = this.userRepository.findByProfileId(filters.profileId);
+    } else if (filters?.search) {
+      users = this.userRepository.search(filters.search);
+    } else {
+      users = this.userRepository.findAll();
     }
-    return this.userRepository.findAll();
+
+    // Aplicar paginação se fornecida
+    if (pagination?.page && pagination?.limit) {
+      const page = Math.max(1, pagination.page);
+      const limit = Math.max(1, Math.min(100, pagination.limit)); // Max 100 por página
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedData = users.slice(startIndex, endIndex);
+
+      return {
+        data: paginatedData,
+        total: users.length,
+        page,
+        limit,
+        totalPages: Math.ceil(users.length / limit),
+      };
+    }
+
+    return users;
   }
 
   findOne(id: string): User {

@@ -28,6 +28,17 @@ export class InMemoryUserRepository implements IUserRepository {
     return this.users.filter((u) => u.profileId === profileId);
   }
 
+  search(searchTerm: string): User[] {
+    const term = searchTerm.toLowerCase();
+    return this.users.filter(
+      (u) =>
+        u.firstName.toLowerCase().includes(term) ||
+        u.lastName.toLowerCase().includes(term) ||
+        u.email.toLowerCase().includes(term) ||
+        `${u.firstName} ${u.lastName}`.toLowerCase().includes(term),
+    );
+  }
+
   create(userData: CreateUserInput): User {
     const newUser: User = {
       id: `user-${this.nextId++}`,

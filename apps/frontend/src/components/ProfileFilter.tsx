@@ -21,9 +21,11 @@ export default function ProfileFilter({
       <select
         value={selectedProfileId}
         onChange={(e) => onFilterChange(e.target.value)}
-        className="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={`w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 ${
+          !selectedProfileId ? 'text-gray-500' : ''
+        }`}
       >
-        <option value="">Todos os perfis</option>
+        <option value="" className="text-gray-500">Todos os perfis</option>
         {profiles.map((profile) => (
           <option key={profile.id} value={profile.id}>
             {profile.name}

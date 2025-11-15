@@ -1,10 +1,19 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { User, Profile, CreateUserInput, UpdateUserInput } from '@falconi/shared-types'
+import {
+  User,
+  Profile,
+  CreateUserInput,
+  UpdateUserInput,
+  PaginatedResponse,
+} from '@falconi/shared-types'
 import UsersList from '@/components/UsersList'
 import UserForm from '@/components/UserForm'
 import ProfileFilter from '@/components/ProfileFilter'
+import SearchBar from '@/components/SearchBar'
+import Pagination from '@/components/Pagination'
+import ConfirmModal from '@/components/ConfirmModal'
 import { useToast } from '@/contexts/ToastContext'
 import {
   getUsers,
@@ -20,19 +29,48 @@ export default function Home() {
   const [users, setUsers] = useState<User[]>([])
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [selectedProfileId, setSelectedProfileId] = useState<string>('')
+  const [searchTerm, setSearchTerm] = useState<string>('')
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pagination, setPagination] = useState<{
+    total: number
+    totalPages: number
+    limit: number
+  } | null>(null)
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean
+    userId: string | null
+    userName: string
+  }>({
+    isOpen: false,
+    userId: null,
+    userName: '',
+  })
   const { showToast } = useToast()
+
+  const itemsPerPage = 10
 
   useEffect(() => {
     loadProfiles()
     loadUsers()
   }, [])
 
+  // Debounce da busca e filtros - reseta página para 1
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentPage(1)
+    }, 300) // 300ms de debounce
+
+    return () => clearTimeout(timer)
+  }, [searchTerm, selectedProfileId])
+
+  // Carregar usuários quando página ou filtros mudarem
   useEffect(() => {
     loadUsers()
-  }, [selectedProfileId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, searchTerm, selectedProfileId])
 
   const loadProfiles = async () => {
     try {
@@ -50,9 +88,30 @@ export default function Home() {
   const loadUsers = async () => {
     try {
       setLoading(true)
-      const filters = selectedProfileId ? { profileId: selectedProfileId } : undefined
-      const data = await getUsers(filters)
-      setUsers(data)
+      const filters: any = {}
+      if (selectedProfileId) filters.profileId = selectedProfileId
+      if (searchTerm.trim()) filters.search = searchTerm.trim()
+
+      const paginationParams = {
+        page: currentPage,
+        limit: itemsPerPage,
+      }
+
+      const response = await getUsers(filters, paginationParams)
+
+      // Verificar se é resposta paginada ou array simples
+      if (Array.isArray(response)) {
+        setUsers(response)
+        setPagination(null)
+      } else {
+        const paginatedResponse = response as PaginatedResponse<User>
+        setUsers(paginatedResponse.data)
+        setPagination({
+          total: paginatedResponse.total,
+          totalPages: paginatedResponse.totalPages,
+          limit: paginatedResponse.limit,
+        })
+      }
     } catch (err) {
       const errorMessage =
         err instanceof ApiError
@@ -96,18 +155,31 @@ export default function Home() {
     }
   }
 
-  const handleDeleteUser = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este usuário?')) return
+  const handleDeleteClick = (id: string, userName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      userId: id,
+      userName,
+    })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.userId) return
 
     try {
-      await deleteUser(id)
+      await deleteUser(deleteModal.userId)
       await loadUsers()
       showToast('success', 'Usuário excluído com sucesso!')
+      setDeleteModal({ isOpen: false, userId: null, userName: '' })
     } catch (err) {
       const errorMessage =
         err instanceof ApiError ? err.message : 'Erro ao excluir usuário'
       showToast('error', errorMessage)
     }
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, userId: null, userName: '' })
   }
 
   const handleToggleActive = async (id: string, isActive: boolean) => {
@@ -134,22 +206,43 @@ export default function Home() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100 overflow-hidden">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold text-gray-800">Usuários</h2>
                 <button
                   onClick={() => setEditingUser(null)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition flex items-center gap-2 shadow-sm hover:shadow-md"
                 >
-                  + Novo Usuário
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Novo Usuário
                 </button>
               </div>
 
-              <ProfileFilter
-                profiles={profiles}
-                selectedProfileId={selectedProfileId}
-                onFilterChange={setSelectedProfileId}
-              />
+              <div className="mb-4 space-y-4">
+                <ProfileFilter
+                  profiles={profiles}
+                  selectedProfileId={selectedProfileId}
+                  onFilterChange={setSelectedProfileId}
+                />
+                <SearchBar
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  placeholder="Buscar por nome ou email..."
+                />
+              </div>
 
               {loading ? (
                 <div className="text-center py-8">
@@ -178,28 +271,41 @@ export default function Home() {
                   </div>
                 </div>
               ) : (
+                <>
                 <UsersList
                   users={users}
                   profiles={profiles}
                   onEdit={setEditingUser}
-                  onDelete={handleDeleteUser}
+                  onDelete={handleDeleteClick}
                   onToggleActive={handleToggleActive}
                 />
+                  {pagination && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={pagination.totalPages}
+                      totalItems={pagination.total}
+                      itemsPerPage={itemsPerPage}
+                      onPageChange={setCurrentPage}
+                    />
+                  )}
+                </>
               )}
             </div>
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
+            <div className="bg-white rounded-lg shadow-lg p-6 sticky top-4 border border-gray-100">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                 {editingUser ? 'Editar Usuário' : 'Novo Usuário'}
               </h2>
               <UserForm
                 user={editingUser}
                 profiles={profiles}
-                onSubmit={editingUser
-                  ? (data) => handleUpdateUser(editingUser.id, data)
-                  : handleCreateUser}
+                onSubmit={
+                  editingUser
+                    ? (data) => handleUpdateUser(editingUser.id, data as UpdateUserInput)
+                    : (data) => handleCreateUser(data as CreateUserInput)
+                }
                 onCancel={() => setEditingUser(null)}
                 isLoading={submitting}
               />
@@ -207,6 +313,17 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        title="Confirmar Exclusão"
+        message={`Tem certeza que deseja excluir o usuário "${deleteModal.userName}"? Esta ação não pode ser desfeita.`}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        variant="danger"
+      />
     </main>
   )
 }

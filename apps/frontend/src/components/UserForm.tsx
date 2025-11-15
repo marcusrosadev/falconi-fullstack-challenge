@@ -133,7 +133,8 @@ export default function UserForm({
           value={formData.firstName}
           onChange={(e) => handleChange('firstName', e.target.value)}
           onBlur={() => handleBlur('firstName')}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+          placeholder="Digite o nome"
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 placeholder:text-gray-400 text-gray-900 ${
             errors.firstName && touched.firstName
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
@@ -153,7 +154,8 @@ export default function UserForm({
           value={formData.lastName}
           onChange={(e) => handleChange('lastName', e.target.value)}
           onBlur={() => handleBlur('lastName')}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+          placeholder="Digite o sobrenome"
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 placeholder:text-gray-400 text-gray-900 ${
             errors.lastName && touched.lastName
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
@@ -173,7 +175,8 @@ export default function UserForm({
           value={formData.email}
           onChange={(e) => handleChange('email', e.target.value)}
           onBlur={() => handleBlur('email')}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+          placeholder="exemplo@email.com"
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 placeholder:text-gray-400 text-gray-900 ${
             errors.email && touched.email
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
@@ -192,13 +195,15 @@ export default function UserForm({
           value={formData.profileId}
           onChange={(e) => handleChange('profileId', e.target.value)}
           onBlur={() => handleBlur('profileId')}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 text-gray-900 ${
             errors.profileId && touched.profileId
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
-          }`}
+          } ${!formData.profileId ? 'text-gray-400' : ''}`}
         >
-          <option value="">Selecione um perfil</option>
+          <option value="" disabled className="text-gray-400">
+            Selecione um perfil
+          </option>
           {profiles.map((profile) => (
             <option key={profile.id} value={profile.id}>
               {profile.name}

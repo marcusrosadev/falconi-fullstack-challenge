@@ -10,6 +10,7 @@ export interface IUserRepository {
   findById(id: string): User | undefined;
   findByEmail(email: string): User | undefined;
   findByProfileId(profileId: string): User[];
+  search(searchTerm: string): User[];
   create(userData: CreateUserInput): User;
   update(id: string, userData: UpdateUserInput): User;
   delete(id: string): boolean;

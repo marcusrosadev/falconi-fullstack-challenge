@@ -4,6 +4,8 @@ import {
   CreateUserInput,
   UpdateUserInput,
   UserFilters,
+  PaginationParams,
+  PaginatedResponse,
 } from '@falconi/shared-types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
@@ -44,15 +46,27 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 // ============ USERS API ============
 
-export async function getUsers(filters?: UserFilters): Promise<User[]> {
+export async function getUsers(
+  filters?: UserFilters,
+  pagination?: PaginationParams,
+): Promise<User[] | PaginatedResponse<User>> {
   const params = new URLSearchParams()
   if (filters?.profileId) {
     params.append('profileId', filters.profileId)
   }
+  if (filters?.search) {
+    params.append('search', filters.search)
+  }
+  if (pagination?.page) {
+    params.append('page', pagination.page.toString())
+  }
+  if (pagination?.limit) {
+    params.append('limit', pagination.limit.toString())
+  }
 
   const url = `${API_URL}/users${params.toString() ? `?${params.toString()}` : ''}`
   const response = await fetch(url)
-  return handleResponse<User[]>(response)
+  return handleResponse<User[] | PaginatedResponse<User>>(response)
 }
 
 export async function getUserById(id: string): Promise<User> {

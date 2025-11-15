@@ -33,6 +33,21 @@ export interface UpdateUserInput {
 // Filters para User
 export interface UserFilters {
   profileId?: string;
+  search?: string; // Busca por nome ou email
+}
+
+// Paginação
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 // DTOs para Profile (mantidos para compatibilidade)

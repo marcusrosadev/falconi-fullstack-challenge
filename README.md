@@ -96,8 +96,12 @@ O frontend estará disponível em: `http://localhost:3000`
 
 ## 🔌 Endpoints da API
 
+### Documentação Swagger
+Acesse a documentação interativa da API em: `http://localhost:3001/api`
+
 ### Usuários
-- `GET /users` - Lista todos os usuários (query: `?profileId=xxx` para filtrar)
+- `GET /users` - Lista todos os usuários
+  - Query params: `?profileId=xxx` (filtrar por perfil), `?search=termo` (buscar por nome/email), `?page=1&limit=10` (paginação)
 - `GET /users/:id` - Busca usuário por ID
 - `POST /users` - Cria novo usuário
 - `PUT /users/:id` - Atualiza usuário
@@ -162,22 +166,29 @@ A aplicação inicializa automaticamente com:
 - ✅ **Tratamento de erros aprimorado**: Classe ApiError customizada com mensagens amigáveis
 - ✅ **Feedback visual melhorado**: Mensagens de sucesso/erro com auto-dismiss, loading states animados
 - ✅ **UX aprimorada**: Indicadores visuais, validação de email, campos obrigatórios marcados
+- ✅ **Busca por nome/email**: Campo de busca com debounce de 300ms
+- ✅ **Paginação**: Sistema completo de paginação com controles visuais
+- ✅ **Documentação Swagger**: API documentada com Swagger/OpenAPI em `/api`
+- ✅ **Testes unitários**: Testes básicos para services implementados
+- ✅ **Ícones com tooltips**: Ações da tabela substituídas por ícones intuitivos
+- ✅ **Placeholders melhorados**: Textos de placeholder mais escuros e informativos
 
 ## 🚧 Possíveis Melhorias
 
 Veja o arquivo [TODO.md](./TODO.md) para uma lista completa e detalhada de melhorias futuras.
 
 ### Curto Prazo
-- [ ] Adicionar testes unitários e de integração
-- [ ] Implementar paginação para listas grandes
-- [ ] Adicionar busca por nome/email
-- [ ] Documentação da API com Swagger/OpenAPI
+- [x] Adicionar testes unitários e de integração
+- [x] Implementar paginação para listas grandes
+- [x] Adicionar busca por nome/email
+- [x] Documentação da API com Swagger/OpenAPI
+
+> **Nota:** Para usar o Swagger, instale a dependência: `npm install` (na raiz) ou `cd apps/backend && npm install @nestjs/swagger`
 
 ### Médio Prazo
 - [ ] Integração com banco de dados (MySQL conforme requisitos da vaga)
 - [ ] Autenticação e autorização
 - [ ] Logging estruturado
-- [ ] Documentação da API com Swagger/OpenAPI
 - [ ] Tratamento de erros mais robusto
 
 ### Longo Prazo
