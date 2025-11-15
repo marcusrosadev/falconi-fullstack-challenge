@@ -2,12 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
 import type { Request, Response } from 'express';
-import * as express from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-let cachedApp: express.Express;
+const express = require('express');
 
-async function createApp(): Promise<express.Express> {
+let cachedApp: any;
+
+async function createApp(): Promise<any> {
   if (cachedApp) {
     return cachedApp;
   }
