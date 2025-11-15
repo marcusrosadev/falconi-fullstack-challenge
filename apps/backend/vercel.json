@@ -1,11 +1,16 @@
 {
   "version": 2,
-  "buildCommand": "cd ../.. && npm install && npm run build --workspace=packages/shared-types && cd apps/backend && npm install && npm run build",
-  "installCommand": "cd ../.. && npm install",
+  "buildCommand": "cd ../.. && npm install --include=dev && npm run build --workspace=packages/shared-types && cd apps/backend && npm install --include=dev && npm run build",
+  "installCommand": "cd ../.. && npm install --include=dev",
   "builds": [
     {
       "src": "api/index.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "../../packages/shared-types/dist/**"
+        ]
+      }
     }
   ],
   "routes": [
