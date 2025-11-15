@@ -1,8 +1,8 @@
 'use client'
 
 import { User, Profile } from '@falconi/shared-types'
-import IconButton from './IconButton'
-import { EditIcon, DeleteIcon, ActivateIcon, DeactivateIcon, SortAscIcon, SortDescIcon } from './Icons'
+import IconButton from '../ui/IconButton'
+import { EditIcon, DeleteIcon, ActivateIcon, DeactivateIcon, SortAscIcon, SortDescIcon } from '../icons/Icons'
 import { canEditUser, canToggleUserStatus } from '@/utils/permissions'
 
 type SortField = 'name' | 'email' | 'profile' | 'status' | null

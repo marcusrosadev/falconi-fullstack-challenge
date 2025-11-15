@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +14,12 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
+  // Aplicar filtro global de exceções
+  app.useGlobalFilters(new HttpExceptionFilter());
+  
+  // Aplicar interceptor global de transformação
+  app.useGlobalInterceptors(new TransformInterceptor());
+
   // Configuração do Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('Falconi - API de Gerenciamento de Usuários')
@@ -19,6 +27,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('users', 'Operações relacionadas a usuários')
     .addTag('profiles', 'Operações relacionadas a perfis')
+    .addTag('auth', 'Operações de autenticação')
     .build();
   
   const document = SwaggerModule.createDocument(app, config);

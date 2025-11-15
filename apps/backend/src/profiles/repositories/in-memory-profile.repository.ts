@@ -2,10 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Profile, CreateProfileDto, UpdateProfileDto } from '@falconi/shared-types';
 import { IProfileRepository } from './profile.repository.interface';
 
-/**
- * Implementação em memória do repositório de perfis
- * Segue o princípio SOLID - Single Responsibility
- */
 @Injectable()
 export class InMemoryProfileRepository implements IProfileRepository {
   private profiles: Profile[] = [];

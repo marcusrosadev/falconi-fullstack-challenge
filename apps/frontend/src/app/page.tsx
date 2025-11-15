@@ -9,26 +9,18 @@ import {
   PaginatedResponse,
   Permission,
 } from '@falconi/shared-types'
-import UsersList from '@/components/UsersList'
-import UserForm from '@/components/UserForm'
-import ProfileFilter from '@/components/ProfileFilter'
-import SearchBar from '@/components/SearchBar'
-import Pagination from '@/components/Pagination'
-import ConfirmModal from '@/components/ConfirmModal'
-import ProtectedRoute from '@/components/ProtectedRoute'
+import { UsersList, UserForm, ProtectedRoute } from '@/components/features'
+import { ProfileFilter, SearchBar, Pagination, ConfirmModal } from '@/components/ui'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { useRouter } from 'next/navigation'
 import {
-  getUsers,
-  getProfiles,
-  createUser,
-  updateUser,
-  deleteUser,
-  toggleUserStatus,
+  usersApi,
+  profilesApi,
   ApiError,
 } from '@/services/api'
 import { exportUsersToCSV, exportUsersToJSON } from '@/utils/export'
+import { UsersIcon, LogoutIcon, DownloadIcon, SpinnerIcon, LockIcon } from '@/components/icons'
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([])
@@ -89,9 +81,9 @@ export default function Home() {
 
   const loadProfiles = async () => {
     try {
-      const data = await getProfiles()
+      const data = await profilesApi.getProfiles()
       setProfiles(data)
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage =
         err instanceof ApiError
           ? err.message
@@ -112,7 +104,7 @@ export default function Home() {
         limit: itemsPerPage,
       }
 
-      const response = await getUsers(filters, paginationParams)
+      const response = await usersApi.getUsers(filters, paginationParams)
 
       // Verificar se é resposta paginada ou array simples
       if (Array.isArray(response)) {
@@ -127,7 +119,7 @@ export default function Home() {
           limit: paginatedResponse.limit,
         })
       }
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage =
         err instanceof ApiError
           ? err.message
@@ -141,11 +133,11 @@ export default function Home() {
   const handleCreateUser = async (userData: CreateUserInput) => {
     try {
       setSubmitting(true)
-      await createUser(userData)
+      await usersApi.createUser(userData)
       await loadUsers()
-      setEditingUser(null)
+      setEditingUser(null) // Isso vai limpar o formulário via useEffect no UserForm
       showToast('success', 'Usuário criado com sucesso!')
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage =
         err instanceof ApiError ? err.message : 'Erro ao criar usuário'
       showToast('error', errorMessage)
@@ -157,11 +149,11 @@ export default function Home() {
   const handleUpdateUser = async (id: string, userData: UpdateUserInput) => {
     try {
       setSubmitting(true)
-      await updateUser(id, userData)
+      await usersApi.updateUser(id, userData)
       await loadUsers()
       setEditingUser(null)
       showToast('success', 'Usuário atualizado com sucesso!')
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage =
         err instanceof ApiError ? err.message : 'Erro ao atualizar usuário'
       showToast('error', errorMessage)
@@ -182,11 +174,11 @@ export default function Home() {
     if (!deleteModal.userId) return
 
     try {
-      await deleteUser(deleteModal.userId)
+      await usersApi.deleteUser(deleteModal.userId)
       await loadUsers()
       showToast('success', 'Usuário excluído com sucesso!')
       setDeleteModal({ isOpen: false, userId: null, userName: '' })
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage =
         err instanceof ApiError ? err.message : 'Erro ao excluir usuário'
       showToast('error', errorMessage)
@@ -199,13 +191,13 @@ export default function Home() {
 
   const handleToggleActive = async (id: string, isActive: boolean) => {
     try {
-      await toggleUserStatus(id, isActive)
+      await usersApi.toggleUserStatus(id, isActive)
       await loadUsers()
       showToast(
         'success',
         `Usuário ${isActive ? 'desativado' : 'ativado'} com sucesso!`,
       )
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage =
         err instanceof ApiError ? err.message : 'Erro ao alterar status do usuário'
       showToast('error', errorMessage)
@@ -292,26 +284,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <svg
-            className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
+          <SpinnerIcon className="h-12 w-12 text-blue-600 mx-auto mb-4" />
           <p className="text-gray-600">Carregando...</p>
         </div>
       </div>
@@ -330,7 +303,8 @@ export default function Home() {
           <div className="container mx-auto px-4 max-w-7xl py-4">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                  <UsersIcon className="w-7 h-7 text-blue-600" />
                   Gerenciamento de Usuários
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">
@@ -347,20 +321,7 @@ export default function Home() {
                 onClick={logout}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
+                <LogoutIcon />
                 Sair
               </button>
             </div>
@@ -376,72 +337,24 @@ export default function Home() {
                 <h2 className="text-2xl font-semibold text-gray-800">Usuários</h2>
                 <div className="flex items-center gap-2">
                   {canExport && (
-                    <div className="flex items-center gap-2 mr-2">
+                    <div className="flex items-center gap-2">
                       <button
                         onClick={handleExportCSV}
                         className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm transform hover:scale-105"
                         title="Exportar para CSV"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                          />
-                        </svg>
+                        <DownloadIcon className="w-4 h-4" />
                         CSV
                       </button>
                       <button
                         onClick={handleExportJSON}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm transform hover:scale-105"
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm transform hover:scale-105"
                         title="Exportar para JSON"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                          />
-                        </svg>
+                        <DownloadIcon className="w-4 h-4" />
                         JSON
                       </button>
                     </div>
-                  )}
-                  {canCreate && (
-                    <button
-                      onClick={() => setEditingUser(null)}
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium transform hover:scale-105"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                      Novo Usuário
-                    </button>
                   )}
                 </div>
               </div>
@@ -462,26 +375,7 @@ export default function Home() {
               {loading ? (
                 <div className="text-center py-8">
                   <div className="inline-flex items-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    <SpinnerIcon className="-ml-1 mr-3 h-5 w-5 text-blue-600" />
                     <span className="text-gray-600">Carregando usuários...</span>
                   </div>
                 </div>
@@ -526,10 +420,11 @@ export default function Home() {
                   profiles={profiles}
                   onSubmit={
                     editingUser
-                      ? (data) => handleUpdateUser(editingUser.id, data as UpdateUserInput)
-                      : (data) => handleCreateUser(data as CreateUserInput)
+                      ? (data: CreateUserInput | UpdateUserInput) => handleUpdateUser(editingUser.id, data as UpdateUserInput)
+                      : (data: CreateUserInput | UpdateUserInput) => handleCreateUser(data as CreateUserInput)
                   }
                   onCancel={() => setEditingUser(null)}
+                  onClear={() => setEditingUser(null)}
                   isLoading={submitting}
                 />
               </div>
@@ -538,20 +433,7 @@ export default function Home() {
             <div className="lg:col-span-1">
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg shadow-lg p-6 sticky top-4 border border-blue-100">
                 <div className="text-center py-8">
-                  <svg
-                    className="w-16 h-16 text-blue-400 mx-auto mb-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                    />
-                  </svg>
+                  <LockIcon className="w-16 h-16 text-blue-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">
                     Apenas Visualização
                   </h3>

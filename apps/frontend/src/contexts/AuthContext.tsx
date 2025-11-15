@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { User, Profile, Permission, AuthResponse } from '@falconi/shared-types'
-import { login as apiLogin, ApiError } from '@/services/api'
+import { authApi, ApiError } from '@/services/api'
 import { useToast } from './ToastContext'
 
 interface AuthContextType {
@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string) => {
     try {
       setIsLoading(true)
-      const authResponse = await apiLogin({ email })
+      const authResponse = await authApi.login({ email })
       setUser(authResponse.user)
       setProfile(authResponse.profile)
       const userPermissions = getPermissionsForProfile(authResponse.profile.name)
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('auth', JSON.stringify(authResponse))
       
       showToast('success', `Bem-vindo, ${authResponse.user.firstName}!`)
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage =
         err instanceof ApiError
           ? err.message

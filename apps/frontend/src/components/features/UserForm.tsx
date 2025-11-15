@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { User, Profile, CreateUserInput, UpdateUserInput } from '@falconi/shared-types'
+import { UserIcon, EmailIcon, UsersIcon, ChevronDownIcon, SpinnerIcon, CloseIcon } from '../icons/Icons'
 
 interface UserFormProps {
   user: User | null
   profiles: Profile[]
   onSubmit: (data: CreateUserInput | UpdateUserInput) => void
   onCancel: () => void
+  onClear?: () => void
   isLoading?: boolean
 }
 
@@ -28,6 +30,7 @@ export default function UserForm({
   profiles,
   onSubmit,
   onCancel,
+  onClear,
   isLoading = false,
 }: UserFormProps) {
   const [formData, setFormData] = useState({
@@ -122,6 +125,20 @@ export default function UserForm({
     }
   }
 
+  const handleClear = () => {
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      profileId: profiles[0]?.id || '',
+    })
+    setErrors({})
+    setTouched({})
+    if (onClear) {
+      onClear()
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-1">
@@ -130,20 +147,7 @@ export default function UserForm({
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
+            <UserIcon className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="text"
@@ -160,13 +164,7 @@ export default function UserForm({
         </div>
         {errors.firstName && touched.firstName && (
           <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <CloseIcon className="w-4 h-4" />
             {errors.firstName}
           </p>
         )}
@@ -178,20 +176,7 @@ export default function UserForm({
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
+            <UserIcon className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="text"
@@ -208,13 +193,7 @@ export default function UserForm({
         </div>
         {errors.lastName && touched.lastName && (
           <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <CloseIcon className="w-4 h-4" />
             {errors.lastName}
           </p>
         )}
@@ -226,20 +205,7 @@ export default function UserForm({
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
+            <EmailIcon className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="email"
@@ -256,13 +222,7 @@ export default function UserForm({
         </div>
         {errors.email && touched.email && (
           <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <CloseIcon className="w-4 h-4" />
             {errors.email}
           </p>
         )}
@@ -274,20 +234,7 @@ export default function UserForm({
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
+            <UsersIcon className="h-5 w-5 text-gray-400" />
           </div>
           <select
             value={formData.profileId}
@@ -309,31 +256,12 @@ export default function UserForm({
             ))}
           </select>
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            <ChevronDownIcon className="h-5 w-5 text-gray-400" />
           </div>
         </div>
         {errors.profileId && touched.profileId && (
           <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <CloseIcon className="w-4 h-4" />
             {errors.profileId}
           </p>
         )}
@@ -347,77 +275,22 @@ export default function UserForm({
         >
           {isLoading ? (
             <>
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
+              <SpinnerIcon className="h-5 w-5 text-white" />
               {user ? 'Atualizando...' : 'Criando...'}
             </>
           ) : (
             <>
-              {user ? (
-                <>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  Atualizar
-                </>
-              ) : (
-                <>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Criar
-                </>
-              )}
+              {user ? 'Atualizar' : 'Criar'}
             </>
           )}
         </button>
         <button
           type="button"
-          onClick={onCancel}
+          onClick={handleClear}
           disabled={isLoading}
-          className="px-4 py-3 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed text-gray-700 rounded-lg transition font-medium border border-gray-300"
+          className="px-4 py-3 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed text-gray-700 rounded-lg transition font-medium border border-gray-300 flex items-center gap-2"
         >
-          Cancelar
+          Limpar
         </button>
       </div>
     </form>

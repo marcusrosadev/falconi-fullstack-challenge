@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { ToastProvider } from '@/contexts/ToastContext'
 import { AuthProvider } from '@/contexts/AuthContext'
-import ToastContainer from '@/components/ToastContainer'
+import { ToastContainer } from '@/components/ui'
 
 export const metadata: Metadata = {
   title: 'Falconi - Gerenciamento de Usuários',

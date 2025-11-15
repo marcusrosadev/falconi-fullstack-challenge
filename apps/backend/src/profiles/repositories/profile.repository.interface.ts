@@ -1,9 +1,5 @@
 import { Profile, CreateProfileDto, UpdateProfileDto } from '@falconi/shared-types';
 
-/**
- * Interface do repositório de perfis
- * Segue o princípio SOLID - Dependency Inversion
- */
 export interface IProfileRepository {
   findAll(): Profile[];
   findById(id: string): Profile | undefined;

@@ -2,11 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { User, CreateUserInput, UpdateUserInput } from '@falconi/shared-types';
 import { IUserRepository } from './user.repository.interface';
 
-/**
- * Implementação em memória do repositório de usuários
- * Segue o princípio SOLID - Single Responsibility
- * Responsável apenas pelo acesso e manipulação dos dados
- */
 @Injectable()
 export class InMemoryUserRepository implements IUserRepository {
   private users: User[] = [];

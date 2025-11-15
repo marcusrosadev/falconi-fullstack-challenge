@@ -13,7 +13,7 @@ import { IProfileRepository } from './repositories/profile.repository.interface'
       useClass: InMemoryProfileRepository,
     },
   ],
-  exports: [ProfilesService],
+  exports: [ProfilesService, 'IProfileRepository'],
 })
 export class ProfilesModule {}
 
