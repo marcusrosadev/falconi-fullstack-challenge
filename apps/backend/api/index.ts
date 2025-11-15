@@ -3,6 +3,8 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
 import type { Request, Response } from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
+import { TransformInterceptor } from '../src/common/interceptors/transform.interceptor';
 
 const express = require('express');
 
@@ -23,6 +25,12 @@ async function getApp() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
+  // Aplicar filtro global de exceções
+  app.useGlobalFilters(new HttpExceptionFilter());
+  
+  // Aplicar interceptor global de transformação
+  app.useGlobalInterceptors(new TransformInterceptor());
+
   // Configurar Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('Falconi - API de Gerenciamento de Usuários')
@@ -30,6 +38,7 @@ async function getApp() {
     .setVersion('1.0')
     .addTag('users', 'Operações relacionadas a usuários')
     .addTag('profiles', 'Operações relacionadas a perfis')
+    .addTag('auth', 'Operações de autenticação')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -51,7 +60,18 @@ export default async function handler(req: Request, res: Response) {
     return res.status(200).end();
   }
 
-  const app = await getApp();
-  app(req, res);
+  try {
+    const app = await getApp();
+    app(req, res);
+  } catch (error) {
+    console.error('Error in serverless function:', error);
+    if (!res.headersSent) {
+      res.status(500).json({
+        statusCode: 500,
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? String(error) : undefined,
+      });
+    }
+  }
 }
 
