@@ -5,9 +5,12 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Habilitar CORS para o frontend
+  // Habilitar CORS para o frontend (desenvolvimento e produção)
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'https://falconi-fullstack-challenge-fronten.vercel.app',
+    ],
     credentials: true,
   });
 
